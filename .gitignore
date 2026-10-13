@@ -25,9 +25,10 @@ local-reports/
 !.env.example
 !.npmrc
 
-# Markdown documents, except public README files
+# Markdown documents, except public README and contribution files
 *.md
 !README.md
+!/CONTRIBUTION.md
 
 .next/
 *.tsbuildinfo
