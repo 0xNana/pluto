@@ -1,0 +1,37 @@
+node_modules/
+dist/
+out/
+cache/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+artifacts/
+local-reports/
+
+# Internal planning and agent workspace files
+/internal-docs/
+/tasks/
+/agent/
+/.agents/
+/.claude/
+/.codex/
+/skills-lock.json
+
+# Hidden files and folders (including nested agent/editor configuration)
+.*
+!.gitignore
+!.env.example
+!.npmrc
+
+# Markdown documents, except public README files
+*.md
+!README.md
+
+.next/
+*.tsbuildinfo
+apps/web/public/sdk-abis.json
+apps/web/public/registry-artifact.json
+apps/web/public/cryptomata_core_bg.wasm
+apps/web/generated/

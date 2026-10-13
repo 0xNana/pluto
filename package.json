@@ -1,0 +1,66 @@
+{
+  "name": "pluto",
+  "version": "0.1.0",
+  "description": "Verifiable timed vulnerability disclosure for protocol security teams.",
+  "keywords": [
+    "Nillion",
+    "Covenants",
+    "Security",
+    "Disclosure"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xNana/pluto"
+  },
+  "license": "MIT",
+  "author": "elegant",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs && node scripts/build-web.mjs && node scripts/check-web-export.mjs",
+    "test": "node --test --test-isolation=none test/*.test.mjs",
+    "test:browser": "npm run build && node scripts/browser-acceptance.mjs",
+    "check": "node scripts/check.mjs && npm run typecheck",
+    "typecheck": "tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json",
+    "lint": "node scripts/lint.mjs",
+    "safety": "node scripts/protocol-safety.mjs",
+    "verify": "npm run check && npm run lint && npm run safety && npm test && npm run build",
+    "serve": "node --env-file-if-exists=.env scripts/serve.mjs",
+    "settlement": "node --env-file-if-exists=.env packages/cli/settlement.mjs",
+    "keeper": "node --env-file-if-exists=.env scripts/keeper.mjs",
+    "probe:sepolia": "node --env-file-if-exists=.env scripts/probe-sepolia.mjs",
+    "spike:sepolia": "node --env-file-if-exists=.env scripts/spike-sepolia.mjs",
+    "observe:sepolia": "node --env-file-if-exists=.env scripts/observe-sepolia.mjs",
+    "researcher": "node --env-file-if-exists=.env scripts/researcher.mjs",
+    "compare:tlock": "node scripts/compare-tlock.mjs",
+    "dev": "node --env-file-if-exists=.env scripts/dev.mjs",
+    "build:next": "node scripts/build-web.mjs",
+    "test:next": "npm run build:next && node scripts/check-web-export.mjs"
+  },
+  "dependencies": {
+    "@nillion/covenants-sdk": "0.6.1",
+    "@reown/appkit": "1.8.24",
+    "@reown/appkit-adapter-wagmi": "1.8.24",
+    "@tanstack/react-query": "5.104.2",
+    "viem": "2.57.4",
+    "wagmi": "2.19.5"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  },
+  "devDependencies": {
+    "@ethereumjs/block": "10.1.2",
+    "@ethereumjs/common": "10.1.2",
+    "@ethereumjs/evm": "10.1.2",
+    "@ethereumjs/util": "10.1.2",
+    "@types/node": "22.7.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
+    "solc": "0.8.30",
+    "typescript": "5.9.3"
+  },
+  "workspaces": [
+    "apps/web"
+  ]
+}

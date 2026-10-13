@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark"><title>Pluto · Disclosure workspace</title>
+  <link rel="stylesheet" href="/app.css"><script type="module" src="/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="shell">
+  <a class="brand" href="#researcher" aria-label="Pluto researcher workspace">pluto<span class="orbit" aria-hidden="true">◌</span></a>
+  <span class="header-caption">Disclosure intake</span><span class="network">Sepolia · development</span>
+</header>
+<main id="main" class="shell" tabindex="-1">
+  <div class="intro"><p class="eyebrow">Encrypted locally. Verified publicly.</p><h1>Disclosure workspace</h1><p>Prepare an immutable disclosure, manage protocol intake, or independently verify a public report.</p></div>
+  <p id="global-status" class="status" role="status" aria-live="polite">Loading configuration…</p>
+  <nav class="tabs" aria-label="Workspaces">
+    <a href="#researcher" data-workspace="researcher">Researcher</a>
+    <a href="#protocol" data-workspace="protocol">Protocol portal</a>
+    <a href="#verifier" data-workspace="verifier">Public verifier</a>
+  </nav>
+  <noscript><p class="critical">JavaScript is required for local encryption, recovery and verification. No report or key is uploaded by this page.</p></noscript>
+
+  <section id="researcher" class="workspace" aria-labelledby="researcher-title">
+    <div class="section-heading"><p class="eyebrow">Researcher</p><h2 id="researcher-title" tabindex="-1">Prepare a disclosure</h2><p>Your report and recovery keys stay in this browser. You control the report and its disclosure window.</p></div>
+    <ol class="steps" aria-label="Preparation progress">
+      <li id="step-encrypted"><span>1</span> Encrypt locally</li><li id="step-sealed"><span>2</span> Store &amp; seal</li><li id="step-reviewed"><span>3</span> Review &amp; confirm</li>
+    </ol>
+    <div class="columns researcher-grid">
+      <div class="stack">
+        <section class="card" aria-labelledby="prepare-title"><h3 id="prepare-title">1. Encrypt your report</h3>
+          <p>Create a fresh author identity. Keep the private recovery file; Pluto cannot restore it.</p>
+          <label for="report-file">Report file or archive <small>Up to 1 MiB. Padded before encryption.</small></label><input id="report-file" type="file" required>
+          <button id="encrypt" type="button" data-requires="report-file">Create author &amp; encrypt</button>
+          <label for="author">Author address</label><input id="author" readonly autocomplete="off">
+          <p id="report-status" class="status" role="status" aria-live="polite">No report prepared.</p>
+        </section>
+        <section class="card" aria-labelledby="seal-title"><h3 id="seal-title">2. Store ciphertext &amp; seal the key</h3>
+          <div class="field-pair"><div><label for="release-time">Disclosure opens (UTC)</label><input id="release-time" type="datetime-local" required></div>
+          <div><label for="window-hours">Window length (hours)</label><input id="window-hours" type="number" min="1" max="8760" value="24" required></div></div>
+          <details open><summary>Two independent ciphertext providers</summary><p>Browser uploads contain ciphertext only. Each provider must allow CORS and retain your file through public disclosure.</p>
+            <fieldset><legend>Provider A</legend><label for="upload-a">Upload URL</label><input id="upload-a" type="url" required placeholder="https://…"><label for="read-a">Retrieval URL</label><input id="read-a" type="url" required placeholder="https://…"></fieldset>
+            <fieldset><legend>Provider B</legend><label for="upload-b">Upload URL</label><input id="upload-b" type="url" required placeholder="https://…"><label for="read-b">Retrieval URL</label><input id="read-b" type="url" required placeholder="https://…"></fieldset>
+          </details>
+          <label for="funding-method">Funding path</label><select id="funding-method"><option value="self">Self-funded · independent of enrollment</option><option value="protocol">Protocol-funded · customer approval</option></select>
+          <div id="sponsor-fields" hidden><label for="sponsor-domain">Sponsoring protocol domain</label><input id="sponsor-domain" autocomplete="off" placeholder="protocol.example"><p>Researcher prepayment is zero. A funding request is not a live deadline; finalized binding is required.</p></div>
+          <div class="actions"><button id="plan" type="button" disabled data-requires="release-time,window-hours,upload-a,read-a,upload-b,read-b">Upload, verify &amp; seal</button>
+          <button id="refresh-costs" class="secondary" type="button" disabled>Refresh costs for saved seal</button></div>
+          <p class="hint">Refreshing costs preserves the saved seal and window. An active funding request must be withdrawn before choosing self-funding.</p>
+        </section>
+      </div>
+      <div class="stack">
+        <section class="card" aria-labelledby="review-title"><h3 id="review-title">3. Review before signing</h3>
+          <div id="costs" class="facts"><p class="empty">Live cost estimates are required before signing.</p></div>
+          <p>Nodes pause above the selected basefee ceiling. Committee operators can read the sealed key while pending; public shares can expose it before hook acceptance.</p>
+          <button id="save-recovery" class="secondary" type="button" disabled>Download private recovery</button>
+          <label class="check"><input id="recovery-saved" type="checkbox">I downloaded and securely saved my private recovery file.</label>
+          <button id="review" type="button" disabled>Review immutable deadline</button>
+          <div id="final-review" hidden><p class="critical">Once posted, this deadline cannot be cancelled, extended or amended.</p>
+            <label class="check"><input id="irreversible" type="checkbox">I understand and confirm this immutable deadline.</label>
+            <div class="actions"><button id="post" type="button" disabled>Sign &amp; post self-funded</button><button id="request-sponsorship" type="button" disabled>Release signed funding request</button></div>
+          </div>
+          <p id="posting-status" class="status" role="status" aria-live="polite">Live submissions are disabled pending release acceptance.</p>
+          <details id="funding-recovery"><summary>Funding request status &amp; recovery</summary>
+            <p>Save updated recovery after every step. Retry upload uses the exact signed request. Withdrawal applies only before submission.</p>
+            <div class="actions"><button id="sponsorship-status" class="secondary" type="button" disabled>Check request status</button><button id="retry-funding-upload" class="secondary" type="button" disabled>Retry exact saved upload</button>
+            <button id="withdraw-sponsorship" class="secondary" type="button" disabled>Withdraw unsubmitted request</button></div>
+            <label class="check"><input id="withdraw-confirmed" type="checkbox">Withdraw this unsubmitted funding request so I can review self-funded continuation.</label>
+            <button id="inspect-funded-binding" class="secondary" type="button" disabled>Verify &amp; price missing funded binding</button>
+            <div id="funded-binding-costs" class="facts"><p class="empty">Check request status to inspect a funded post.</p></div>
+            <label class="check"><input id="funded-recovery-saved" type="checkbox">I saved the current private recovery file and reviewed the payer’s binding cost.</label>
+            <button id="review-funded-binding" class="secondary" type="button" disabled>Review existing funded deadline</button>
+            <div id="funded-binding-confirmation" hidden><p class="critical">Only the existing trigger will be bound. No new report is registered or posted, and its deadline cannot change.</p><label class="check"><input id="funded-binding-confirmed" type="checkbox">I confirm this missing binding and its reviewed cost cap.</label><button id="complete-funded-binding" type="button" disabled>Authorize funded binding</button></div>
+          </details>
+        </section>
+        <details class="card recovery-panel" id="private-recovery"><summary>Restore private recovery</summary>
+          <p>These files never leave this browser. Earlier browser and CLI formats require their original workflow.</p>
+          <label for="recovery-file">Private browser recovery file</label><input id="recovery-file" type="file" accept="application/json,.json"><button id="import-recovery" class="secondary" type="button" data-requires="recovery-file">Import recovery</button>
+          <label for="local-report-id">Locally saved report ID</label><input id="local-report-id" autocomplete="off"><button id="load-local-recovery" class="secondary" type="button" data-requires="local-report-id">Restore from this browser</button>
+          <button id="inspect-recovery" class="secondary" type="button" disabled>Inspect self-funded receipts</button>
+          <pre id="recovery-history" tabindex="0" aria-label="Private recovery history">No attempt recorded.</pre><div id="recovery-costs" class="facts"><p class="empty">Inspect receipts before reviewing a missing binding.</p></div>
+          <label class="check"><input id="recovery-resaved" type="checkbox">I downloaded and securely saved my current recovery history.</label><button id="review-recovery" class="secondary" type="button" disabled>Review missing binding</button>
+          <div id="recovery-confirmation" hidden><p class="critical">Binding completes the existing immutable deadline and never posts another report.</p><label class="check"><input id="binding-confirmed" type="checkbox">I confirm binding this existing trigger and its deadline.</label><button id="resume-binding" type="button" disabled>Sign missing self-funded binding</button></div>
+          <p id="recovery-status" class="status" role="status" aria-live="polite">No recovery restored.</p>
+        </details>
+      </div>
+    </div>
+    <section class="card delivery-panel" aria-labelledby="delivery-title"><h3 id="delivery-title">Share a bound report privately</h3><p>After binding, you may share a decryptable copy with a verified contact. The key is encrypted locally to the selected contact; Pluto stores the signed notice and encrypted attachment.</p>
+      <div class="field-pair"><div><label for="recipient-domain">Affected protocol domain</label><input id="recipient-domain" autocomplete="off" placeholder="protocol.example"></div><div class="align-end"><button id="load-contacts" class="secondary" type="button" data-requires="recipient-domain">Load verified contacts</button></div></div>
+      <label for="recipient-contact">Verified contact key</label><select id="recipient-contact" aria-describedby="contact-fingerprint"><option value="">No verified contact loaded</option></select><p id="contact-fingerprint" class="hint">Confirm the fingerprint with the recipient.</p>
+      <label class="check"><input id="fingerprint-confirmed" type="checkbox">I confirmed this contact key fingerprint.</label><label class="check"><input id="include-report" type="checkbox">Include the report as well as its key in the encrypted attachment.</label>
+      <label class="check"><input id="delivery-approved" type="checkbox">I approve sharing a decryptable copy with this selected contact.</label>
+      <div class="actions"><button id="export-delivery" class="secondary" type="button" disabled>Export encrypted notice</button><button id="send-delivery" type="button" disabled>Send to verified inbox</button></div>
+      <p id="delivery-status" class="status" role="status" aria-live="polite">A bound, signed notice and explicit sharing consent are required.</p>
+    </section>
+  </section>
+
+  <section id="protocol" class="workspace" aria-labelledby="protocol-title">
+    <div class="section-heading"><p class="eyebrow">Protocol customer</p><h2 id="protocol-title" tabindex="-1">Manage private intake</h2><p>Staff access is scoped to your enrolled protocol. Account and funding changes cannot alter a posted disclosure.</p></div>
+    <div class="account-bar"><div><label for="protocol-domain">Protocol domain</label><input id="protocol-domain" autocomplete="off" placeholder="protocol.example"></div><div class="actions"><button id="login" type="button">Sign in with staff wallet</button><button id="logout" class="secondary" type="button">Sign out</button><button id="load-account" class="secondary" type="button" data-requires="protocol-domain">Check account access</button></div></div>
+    <p id="portal-status" class="status" role="status" aria-live="polite">Sign in to access private notices and funding.</p><div id="account-summary" class="facts"></div>
+    <div class="columns">
+      <section class="card" aria-labelledby="inbox-title"><h3 id="inbox-title">Signed private notices</h3><p>Verify each report’s chain-derived state. Before reveal, a privately supplied key can match the public key commitment without proving that the seal contains that same key.</p>
+        <div class="actions"><button id="inbox" type="button" data-requires="protocol-domain">Load inbox</button><button id="export" class="secondary" type="button" data-requires="protocol-domain">Export private metadata</button><button id="inbox-next" class="secondary" type="button" disabled>Next page</button></div>
+        <div id="notices" class="notices" aria-live="polite"><p class="empty">Select your domain and sign in to load its private inbox.</p></div>
+        <label class="check"><input id="delete-notice-confirmed" type="checkbox">Allow removal of selected private notices. Public copies and permanent chain commitments remain.</label>
+      </section>
+      <div class="stack">
+        <details class="card"><summary>Enroll a protocol domain</summary><p>Signing in does not prove domain ownership. Add the requested DNS TXT record to enroll your protocol.</p><button id="enroll" class="secondary" type="button" data-requires="protocol-domain">Request DNS proof</button><pre id="ownership-proof" tabindex="0">No proof requested.</pre><button id="confirm-enrollment" type="button" disabled>Verify DNS record</button></details>
+        <details class="card" open><summary>Security contacts</summary><button id="load-staff-contacts" class="secondary" type="button" data-requires="protocol-domain">Load contact records</button><div id="staff-contacts" class="notices"><p class="empty">No contact records loaded.</p></div>
+          <label for="contact-email">Contact email</label><input id="contact-email" type="email" autocomplete="email"><label for="contact-key">X25519 public key (32-byte hex)</label><input id="contact-key" autocomplete="off"><button id="request-contact" class="secondary" type="button" data-requires="protocol-domain,contact-email,contact-key">Request verification</button>
+          <label for="contact-id">Contact ID</label><input id="contact-id" autocomplete="off"><label for="contact-code">Email confirmation code</label><input id="contact-code" autocomplete="off"><button id="confirm-contact" type="button" data-requires="protocol-domain,contact-id,contact-code">Confirm contact</button>
+          <hr><label for="rotation-key">Replacement X25519 public key</label><input id="rotation-key" autocomplete="off"><button id="rotate-contact" class="secondary" type="button" data-requires="protocol-domain,contact-id,rotation-key">Request key rotation</button><button id="confirm-rotation" class="secondary" type="button" data-requires="protocol-domain,contact-id,contact-code">Confirm key rotation</button><p class="hint">Rotation requires a fresh email code. Existing encrypted attachments remain encrypted to their original key.</p>
+        </details>
+      </div>
+    </div>
+    <section id="funding-console" class="card funding-panel" aria-labelledby="funding-title"><h3 id="funding-title" tabindex="-1">Protocol funding &amp; approvals</h3>
+      <p>Transfer ETH or the live C0-resolved NIL token from your authenticated staff wallet to the displayed dedicated payer, then submit its finalized transaction hash. Limits cannot create funds.</p>
+      <button id="funding" class="secondary" type="button" data-requires="protocol-domain">Load deposits &amp; limits</button><div id="funding-summary" class="facts"><p class="empty">No funding records loaded.</p></div>
+      <details><summary>Credit a deposit &amp; configure limits</summary><label for="deposit-hash">Inbound deposit transaction hash</label><input id="deposit-hash" autocomplete="off"><button id="credit-deposit" class="secondary" type="button" data-requires="protocol-domain,deposit-hash">Verify finalized deposit</button>
+        <div class="field-pair"><div><label for="budget-eth">ETH spending limit (wei)</label><input id="budget-eth" inputmode="numeric" pattern="[0-9]+"></div><div><label for="budget-nil">NIL spending limit (raw units)</label><input id="budget-nil" inputmode="numeric" pattern="[0-9]+"></div><div><label for="post-eth">Per-report ETH cap (wei)</label><input id="post-eth" inputmode="numeric" pattern="[0-9]+"></div><div><label for="post-nil">Per-report NIL cap (raw units)</label><input id="post-nil" inputmode="numeric" pattern="[0-9]+"></div></div><button id="configure-funding" type="button" data-requires="protocol-domain,budget-eth,budget-nil,post-eth,post-nil">Save funded spending limits</button>
+      </details>
+      <div class="actions"><button id="funding-requests" type="button" data-requires="protocol-domain">Load private requests</button><button id="funding-next" class="secondary" type="button" disabled>Next requests page</button></div><div id="funding-request-list" class="notices"><p class="empty">No requests loaded.</p></div>
+      <label for="funding-request-id">Request ID to review</label><input id="funding-request-id" autocomplete="off"><div class="actions"><button id="quote-funding" class="secondary" type="button" data-requires="protocol-domain,funding-request-id">Review fresh terms &amp; costs</button><button id="check-customer-request" class="secondary" type="button" data-requires="protocol-domain,funding-request-id">Check finalized status</button></div>
+      <div id="funding-review" class="facts"><p class="empty">Select a pending request to review its author, window and exact spending caps.</p></div><label class="check"><input id="funding-approved" type="checkbox">I approve these exact author terms and displayed ETH/NIL caps.</label><button id="approve-funding" type="button" disabled>Approve sponsored submission</button>
+      <p id="funding-status" class="status" role="status" aria-live="polite">Live spending is disabled pending release acceptance.</p>
+    </section>
+    <details class="card account-actions"><summary>Account retention &amp; disablement</summary><p>Private notice/access metadata expires according to the configured retention policy. Contact/account erasure and backup expiry are not yet available. Disabling intake cannot cancel, extend or suppress a posted trigger.</p><label class="check"><input id="disable-account-confirmed" type="checkbox">Disable future protocol intake and funding access for this account. Existing posted disclosures remain independent.</label><button id="disable-account" class="danger" type="button" data-requires="protocol-domain">Disable future intake</button></details>
+  </section>
+
+  <section id="verifier" class="workspace" aria-labelledby="verifier-title">
+    <div class="section-heading"><p class="eyebrow">Independent verification</p><h2 id="verifier-title" tabindex="-1">Check a public record</h2><p>Read the author’s signed notice, verify chain acceptance and commitments, then decrypt locally after disclosure.</p></div>
+    <div class="card verifier-panel"><div class="field-pair"><div><label for="report-id">Report ID</label><input id="report-id" autocomplete="off"></div><div><label for="notice-file">Or import a signed notice</label><input id="notice-file" type="file" accept="application/json,.json"></div></div><button id="verify" type="button">Read &amp; verify</button>
+      <p id="verify-status" class="status" role="status" aria-live="polite">No record inspected.</p><dl id="record"></dl><button id="download-report" type="button" hidden>Download verified report</button>
+      <p class="hint">Ciphertext URLs come from the researcher. The registry holds commitments and timing, not report files. A hook acknowledgement alone is not proof of accepted disclosure.</p>
+    </div>
+  </section>
+  <footer>Pluto records disclosure and provides protocol intake. It does not judge validity or severity, guarantee a bounty, or provide privacy from committee operators.</footer>
+</main>
+</body>
+</html>
