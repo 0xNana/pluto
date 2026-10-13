@@ -91,12 +91,17 @@ build scripts and the root lockfile must be available. The committed
 | Framework | Next.js |
 | Install Command | `npm --prefix ../.. ci --include=dev --ignore-scripts` |
 | Build Command | `npm run build` |
-| Output Directory | `out` |
+| Output Directory | `.next` |
 
 The workspace build invokes the root browser/contract preparation before Next.
 Installing only this workspace's Next/React dependencies produces missing
 root modules, including `esbuild`. Keep build dev dependencies installed and
 use the root lockfile; no additional app lockfile is needed.
+
+Vercel's Next.js builder reads manifests from `.next`, even though Next's
+`output: 'export'` also produces static files in `out`. Selecting `out` as the
+framework Output Directory makes Vercel look for a routes manifest that does not
+exist there. Preserve `.next` for framework metadata and keep static export enabled.
 
 Vercel hosting serves the static preview runtime, not the SQLite/private portal
 or local planner. Staff sign-in and Sepolia submission require the existing

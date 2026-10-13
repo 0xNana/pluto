@@ -193,7 +193,10 @@ describes this setting.
 
 `apps/web/vercel.json` installs the root lockfile with
 `npm --prefix ../.. ci --include=dev --ignore-scripts`, runs the workspace's
-`npm run build`, and selects its static `out` directory. Installing only the
+`npm run build`, and selects `.next` for Vercel's framework build metadata. Next's
+`output: 'export'` remains enabled; the framework handles the static export.
+Do not set Vercel's Output Directory to `out`: that folder lacks the required
+Next routes manifest. Installing only the
 Next workspace omits root build dependencies such as `esbuild` and `solc`.
 The explicit dev-dependency inclusion is required even for a production build.
 
