@@ -79,6 +79,31 @@ React versions are pinned in package.json and the root package-lock.json.
 The earlier HTML/CSS in `packages/web` is a migration regression reference,
 not the production frontend entry point. No production deployment was performed.
 
+## Vercel build configuration
+
+Use project Root Directory `apps/web`, Node 24.x, and enable **Include source
+files outside of the Root Directory in the Build Step**. Shared packages,
+build scripts and the root lockfile must be available. The committed
+`vercel.json` sets:
+
+| Setting | Value |
+| --- | --- |
+| Framework | Next.js |
+| Install Command | `npm --prefix ../.. ci --include=dev --ignore-scripts` |
+| Build Command | `npm run build` |
+| Output Directory | `out` |
+
+The workspace build invokes the root browser/contract preparation before Next.
+Installing only this workspace's Next/React dependencies produces missing
+root modules, including `esbuild`. Keep build dev dependencies installed and
+use the root lockfile; no additional app lockfile is needed.
+
+Vercel hosting serves the static preview runtime, not the SQLite/private portal
+or local planner. Staff sign-in and Sepolia submission require the existing
+HTTPS portal; do not add signing secrets to the static build environment.
+The public PROJECT_ID configures wallet connection. See
+[Vercel monorepo source access](https://vercel.com/docs/monorepos/monorepo-faq).
+
 ## App shell organization
 
 ```text

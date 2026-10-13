@@ -183,6 +183,28 @@ integration still require implementation and acceptance.
 
 ## Commands
 
+### Vercel frontend builds
+
+Set the Vercel project's **Root Directory** to `apps/web` and use Node **24.x**.
+Enable **Include source files outside of the Root Directory in the Build Step**
+because the controller, contract compiler and shared packages live at the
+repository root. [Vercel's monorepo guidance](https://vercel.com/docs/monorepos/monorepo-faq)
+describes this setting.
+
+`apps/web/vercel.json` installs the root lockfile with
+`npm --prefix ../.. ci --include=dev --ignore-scripts`, runs the workspace's
+`npm run build`, and selects its static `out` directory. Installing only the
+Next workspace omits root build dependencies such as `esbuild` and `solc`.
+The explicit dev-dependency inclusion is required even for a production build.
+
+Set the public `PROJECT_ID` in Vercel's environment and allow the deployment
+origin in Reown. Do not configure author/relayer keys on this static frontend.
+Vercel serves the exported preview runtime: local preparation and wallet
+connection are available; portal authentication, live planning and submission
+need the separately configured HTTPS portal. Setting `SEPOLIA_SUBMISSIONS` in
+the static build does not create a backend. No deployment is performed by
+`npm run build`.
+
 ### Local development and checks
 
 | Command | Purpose |
